@@ -7,7 +7,7 @@ public class Note : MonoBehaviour
     [SerializeField] private NoteInteraction prefab_NoteInteraction;
     [SerializeField] private int BPM = 20;
 
-    public enum NoteType { Keystation, Guitar }
+    public enum NoteType { Keystation, Guitar, Mallet }
     private NoteType type;
 
     private Rigidbody2D rb;

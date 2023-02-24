@@ -43,6 +43,8 @@ public class Editor : MonoBehaviour
             type = (NoteType) 0;
         if (Input.GetKeyUp(KeyCode.Alpha2))
             type = (NoteType) 1;
+        if (Input.GetKeyUp(KeyCode.Alpha3))
+            type = (NoteType) 2;
         hoverSprite.color = GetNoteColor();
 
         if (Input.GetKeyUp(KeyCode.Space))
