@@ -6,17 +6,31 @@ public class Note : MonoBehaviour
 {
     [SerializeField] private int BPM = 20;
 
+    public enum NoteType { Keystation, Guitar }
+    private NoteType type;
+
     private Rigidbody2D rb;
+    private SpriteRenderer sRender;
 
     private Vector3 originalPos;
     private Vector3 dir;
     private float speed;
 
     [HideInInspector] public Vector3 Direction { get { return dir; } }
+    [HideInInspector] public bool triggered = false;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        sRender = GetComponent<SpriteRenderer>();
+    }
+
+    public void Setup(Vector3 pos, Quaternion rot, NoteType noteType, Color noteColor)
+    {
+        transform.position = pos;
+        transform.rotation = rot;
+        type = noteType;
+        sRender.color = noteColor;
     }
 
     public void Run()
@@ -40,10 +54,25 @@ public class Note : MonoBehaviour
 
         if (collision.CompareTag("Note"))
         {
-            rb.velocity = collision.transform.GetComponent<Note>().Direction * speed;
-            SoundManager.PlayNextClip();
+            Note other = collision.transform.GetComponent<Note>();
+            rb.velocity = other.Direction * speed;
+
+            if (!triggered)
+                SoundManager.PlayNextClip(type);
+
+            triggered = true;
+
+            if (other.type == type)
+                other.triggered = true;
+
+            Invoke("Untrigger", 60f / BPM / 4f);
         }
         else
             rb.velocity *= -1;
+    }
+
+    private void Untrigger()
+    {
+        triggered = false;
     }
 }

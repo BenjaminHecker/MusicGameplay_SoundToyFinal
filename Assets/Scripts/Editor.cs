@@ -1,11 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Note;
 
 public class Editor : MonoBehaviour
 {
     [SerializeField] private Note prefab_Note;
     [SerializeField] private SpriteRenderer hoverSprite;
+
+    [System.Serializable]
+    public struct NoteColor
+    {
+        public NoteType type;
+        public Color color;
+    }
+    public NoteColor[] noteColors;
+
+    private NoteType type = 0;
 
     private Dictionary<Vector3, Note> placedNotes = new Dictionary<Vector3, Note>();
 
@@ -27,6 +38,12 @@ public class Editor : MonoBehaviour
             if (Input.GetKeyUp(KeyCode.R))
                 hoverSprite.transform.Rotate(0, 0, -90f);
         }
+
+        if (Input.GetKeyUp(KeyCode.Alpha1))
+            type = (NoteType) 0;
+        if (Input.GetKeyUp(KeyCode.Alpha2))
+            type = (NoteType) 1;
+        hoverSprite.color = GetNoteColor();
 
         if (Input.GetKeyUp(KeyCode.Space))
         {
@@ -70,8 +87,7 @@ public class Editor : MonoBehaviour
         RemoveNote(pos);
 
         Note note = Instantiate(prefab_Note);
-        note.transform.position = snapPos;
-        note.transform.rotation = hoverSprite.transform.rotation;
+        note.Setup(snapPos, hoverSprite.transform.rotation, type, GetNoteColor());
 
         placedNotes[snapPos] = note;
     }
@@ -94,5 +110,14 @@ public class Editor : MonoBehaviour
     private Vector2 GetSnapPos(Vector3 pos)
     {
         return new Vector2(Mathf.Floor(pos.x) + 0.5f, Mathf.Floor(pos.y) + 0.5f);
+    }
+
+    private Color GetNoteColor()
+    {
+        foreach (NoteColor noteColor in noteColors)
+            if (noteColor.type == type)
+                return noteColor.color;
+
+        return Color.white;
     }
 }
