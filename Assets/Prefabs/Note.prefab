@@ -136,5 +136,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a209b7b6a267e8a4bb80d9f4f5bc8ce2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prefab_NoteInteraction: {fileID: 3271567309306053972, guid: 0a2f5791f68d4c348a76c9ee32b20f0b, type: 3}
   BPM: 80
   triggered: 0

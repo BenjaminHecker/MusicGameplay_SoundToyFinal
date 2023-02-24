@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Note : MonoBehaviour
 {
+    [SerializeField] private NoteInteraction prefab_NoteInteraction;
     [SerializeField] private int BPM = 20;
 
     public enum NoteType { Keystation, Guitar }
@@ -58,7 +59,11 @@ public class Note : MonoBehaviour
             rb.velocity = other.Direction * speed;
 
             if (!triggered)
+            {
                 SoundManager.PlayNextClip(type);
+                NoteInteraction noteInteraction = Instantiate(prefab_NoteInteraction);
+                noteInteraction.Setup(transform.position, sRender.color);
+            }
 
             triggered = true;
 
