@@ -17,34 +17,50 @@ public class Editor : MonoBehaviour
         pos.z = 0;
         hoverSprite.transform.position = pos;
 
-        if (Input.GetMouseButtonUp(0))
-            PlaceNote(pos);
-        if (Input.GetMouseButtonUp(1))
-            RemoveNote(pos);
+        if (!running)
+        {
+            if (Input.GetMouseButton(0))
+                PlaceNote(pos);
+            if (Input.GetMouseButton(1))
+                RemoveNote(pos);
 
-        if (Input.GetKeyUp(KeyCode.R))
-            hoverSprite.transform.Rotate(0, 0, -90f);
+            if (Input.GetKeyUp(KeyCode.R))
+                hoverSprite.transform.Rotate(0, 0, -90f);
+        }
 
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            foreach (var note in placedNotes)
-            {
-                if (running)
-                    note.Value.ResetNote();
-                else
-                    note.Value.Run();
-            }
+            if (running)
+                ResetNotes();
+            else
+                RunNotes();
 
             running = !running;
+
+            hoverSprite.enabled = !running;
         }
 
         if (Input.GetKeyUp(KeyCode.Return))
         {
+            running = false;
+
             foreach (var note in placedNotes)
                 Destroy(note.Value.gameObject);
             
             placedNotes.Clear();
         }
+    }
+
+    private void ResetNotes()
+    {
+        foreach (var note in placedNotes)
+            note.Value.ResetNote();
+    }
+
+    private void RunNotes()
+    {
+        foreach (var note in placedNotes)
+            note.Value.Run();
     }
 
     private void PlaceNote(Vector3 pos)

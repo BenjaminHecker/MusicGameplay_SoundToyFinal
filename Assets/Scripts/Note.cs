@@ -7,7 +7,6 @@ public class Note : MonoBehaviour
     [SerializeField] private int BPM = 20;
 
     private Rigidbody2D rb;
-    private AudioSource source;
 
     private Vector3 originalPos;
     private Vector3 dir;
@@ -18,7 +17,6 @@ public class Note : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        source = GetComponent<AudioSource>();
     }
 
     public void Run()
@@ -38,17 +36,14 @@ public class Note : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Vector3 colPos = collision.transform.position;
-        transform.position = new Vector2(Mathf.Round(colPos.x * 2) / 2f, Mathf.Round(colPos.y * 2) / 2f);
-
-        AudioClip clip = SoundManager.GetNextClip();
-        source.PlayOneShot(clip);
+        transform.position = new Vector2(Mathf.Round(transform.position.x * 2) / 2f, Mathf.Round(transform.position.y * 2) / 2f);
 
         if (collision.CompareTag("Note"))
         {
             rb.velocity = collision.transform.GetComponent<Note>().Direction * speed;
+            SoundManager.PlayNextClip();
         }
-
-        Debug.Log(clip.name);
+        else
+            rb.velocity *= -1;
     }
 }

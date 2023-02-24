@@ -8,6 +8,8 @@ public class SoundManager : MonoBehaviour
 
     [SerializeField] private AudioClip[] clips;
 
+    private Dictionary<AudioClip, AudioSource> sources = new Dictionary<AudioClip, AudioSource>();
+
     private int clipIdx = -1;
 
     private void Awake()
@@ -16,17 +18,25 @@ public class SoundManager : MonoBehaviour
             instance = this;
         else
             Destroy(gameObject);
+
+        foreach (AudioClip clip in clips)
+        {
+            AudioSource source = gameObject.AddComponent<AudioSource>();
+            source.playOnAwake = false;
+            source.clip = clip;
+            sources[clip] = source;
+        }
     }
 
-    public static AudioClip GetNextClip()
+    public static void PlayNextClip()
     {
-        if (instance.clips.Length == 0) return null;
+        if (instance.clips.Length == 0) return;
 
         instance.clipIdx++;
 
         if (instance.clipIdx >= instance.clips.Length)
             instance.clipIdx = 0;
 
-        return instance.clips[instance.clipIdx];
+        instance.sources[instance.clips[instance.clipIdx]].Play();
     }
 }
